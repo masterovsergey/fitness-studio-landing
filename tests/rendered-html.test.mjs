@@ -179,6 +179,11 @@ test("keeps placeholders honest and uses only the new image direction", async ()
   const parsedPackage = JSON.parse(packageJson);
   assert.equal(parsedPackage.scripts.dev, "vinext dev --hostname 127.0.0.1");
   assert.match(parsedPackage.scripts["build:pages"], /build-pages\.mjs/);
+  assert.match(parsedPackage.scripts.test, /--experimental-strip-types --test/);
+  assert.match(
+    parsedPackage.scripts["test:pages"],
+    /--experimental-strip-types --test/,
+  );
   assert.match(parsedPackage.scripts["lint:platform"], /\bbuild\b/);
   assert.doesNotMatch(gitignore, /^build\/$/m);
   assert.match(gitignore, /^\/docs\/$/m);
