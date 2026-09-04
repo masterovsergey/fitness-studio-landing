@@ -97,6 +97,7 @@ test("keeps placeholders honest and uses only the new image direction", async ()
     css,
     packageJson,
     gitignore,
+    pnpmWorkspace,
   ] = await Promise.all([
       readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
       readFile(
@@ -107,6 +108,7 @@ test("keeps placeholders honest and uses only the new image direction", async ()
       readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
       readFile(new URL("../package.json", import.meta.url), "utf8"),
       readFile(new URL("../.gitignore", import.meta.url), "utf8"),
+      readFile(new URL("../pnpm-workspace.yaml", import.meta.url), "utf8"),
     ]);
 
   assert.match(page, /Рабочая версия/);
@@ -182,6 +184,13 @@ test("keeps placeholders honest and uses only the new image direction", async ()
   assert.match(gitignore, /^\/docs\/$/m);
   assert.match(gitignore, /^\/tmp\/$/m);
   assert.match(gitignore, /^\/public\/\*$/m);
+  for (const dependency of ["esbuild", "sharp", "unrs-resolver", "workerd"]) {
+    assert.match(
+      pnpmWorkspace,
+      new RegExp(`^\\s{2}${dependency}: false$`, "m"),
+    );
+  }
+  assert.doesNotMatch(pnpmWorkspace, /^\s+\S+: true$/m);
 
   await Promise.all([
     access(new URL("../public/images/loft-hero-v2.webp", import.meta.url)),
