@@ -1,0 +1,47 @@
+{
+  "name": "site-creator-vinext-starter",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "vinext dev --hostname 127.0.0.1",
+    "build": "vinext build",
+    "build:pages": "node scripts/build-pages.mjs",
+    "start": "vinext start",
+    "test": "vinext build && node --test tests/rendered-html.test.mjs",
+    "test:pages": "pnpm run build:pages && node --test tests/pages-export.test.mjs",
+    "lint": "eslint app/page.tsx app/layout.tsx app/robots.ts app/sitemap.ts components/mobile-navigation.tsx lib/fitness-service.ts lib/public-site-url.ts lib/site-paths.ts scripts/build-pages.mjs scripts/static-search-files.mjs tests/rendered-html.test.mjs tests/pages-export.test.mjs next.config.ts postcss.config.mjs eslint.config.mjs",
+    "lint:pages": "pnpm run lint",
+    "lint:platform": "eslint app build components lib worker db tests vite.config.ts next.config.ts drizzle.config.ts postcss.config.mjs eslint.config.mjs",
+    "typecheck": "tsc --noEmit --incremental false",
+    "db:generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "drizzle-orm": "0.45.2",
+    "next": "16.2.6",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@tailwindcss/postcss": "4.2.1",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.26",
+    "drizzle-kit": "0.31.10",
+    "eslint": "9.39.4",
+    "eslint-config-next": "16.2.6",
+    "react-server-dom-webpack": "19.2.6",
+    "tailwindcss": "4.2.1",
+    "typescript": "5.9.3",
+    "vinext": "0.0.50",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
+  },
+  "type": "module"
+}
