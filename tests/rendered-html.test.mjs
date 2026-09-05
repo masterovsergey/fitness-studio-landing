@@ -60,17 +60,20 @@ test("server-renders the loft fitness landing structure", async () => {
   assert.match(html, /Разные задачи/i);
   assert.match(html, /Личный кабинет/i);
   assert.match(html, /Один маршрут/i);
-  assert.match(html, /Два понятных входа/i);
-  assert.match(html, /Приложение для клиентов/i);
-  assert.match(html, /Приложение для тренеров/i);
-  assert.match(html, /Сервис пока не выбран/i);
+  assert.match(html, /Запись и оплата/i);
+  assert.match(html, /Для посетителей/i);
+  assert.match(html, /Личный кабинет пока не подключён/i);
+  assert.doesNotMatch(
+    html,
+    /Приложение для тренеров|Для команды|Вход для тренеров|Сервис для тренеров/i,
+  );
   assert.match(html, /Люди определяют/i);
   assert.match(html, /Материалы,/i);
   assert.match(html, /Всё, что важно/i);
   assert.equal((html.match(/class="direction-card"/g) ?? []).length, 6);
   assert.equal((html.match(/class="trainer-card"/g) ?? []).length, 6);
   assert.equal((html.match(/class="booking-flow"/g) ?? []).length, 1);
-  assert.equal((html.match(/class="service-portal"/g) ?? []).length, 2);
+  assert.equal((html.match(/class="service-portal"/g) ?? []).length, 1);
   assert.equal((html.match(/<details>/g) ?? []).length, 6);
   assert.match(html, /Персонажи вымышлены/i);
   assert.match(html, /Изображение показывает визуальную концепцию/i);
@@ -116,7 +119,7 @@ test("keeps placeholders honest and uses only the new image direction", async ()
   assert.match(page, /готовое пространство может отличаться/);
   assert.match(page, /getFitnessServiceStatus/);
   assert.match(page, /NEXT_PUBLIC_CLIENT_PORTAL_URL/);
-  assert.match(page, /NEXT_PUBLIC_TRAINER_PORTAL_URL/);
+  assert.doesNotMatch(page, /NEXT_PUBLIC_TRAINER_PORTAL_URL/);
   assert.match(page, /Точный порядок первого посещения/);
   assert.match(page, /Точный список вещей и требования к экипировке/);
   assert.doesNotMatch(page, /Удобную спортивную форму|чистую сменную обувь/);
@@ -157,6 +160,19 @@ test("keeps placeholders honest and uses only the new image direction", async ()
   assert.match(css, /--coal:\s*#141311/);
   assert.match(css, /--bone:\s*#f0ebe2/);
   assert.match(css, /--copper:\s*#a56b46/);
+  assert.match(
+    css,
+    /\.hero h1\s*\{[\s\S]*?line-height:\s*0\.84;[\s\S]*?letter-spacing:\s*-0\.025em;/,
+  );
+  assert.match(
+    css,
+    /\.mobile-nav nav a\s*\{[\s\S]*?line-height:\s*1\.08;[\s\S]*?letter-spacing:\s*0;/,
+  );
+  assert.match(
+    css,
+    /\.direction-card h3\s*\{[\s\S]*?line-height:\s*0\.96;[\s\S]*?letter-spacing:\s*-0\.015em;/,
+  );
+  assert.doesNotMatch(css, /letter-spacing:\s*-(?:0\.075|0\.065|0\.06|0\.055|0\.05|0\.045)em/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /\.mobile-booking/);
   assert.match(css, /\.booking-section/);
@@ -275,21 +291,13 @@ test("validates future fitness-service links without discarding their paths", ()
 });
 
 test("describes all fitness-service connection states honestly", () => {
-  assert.match(getFitnessServiceStatus(undefined, undefined), /Сервис пока не выбран/);
   assert.match(
-    getFitnessServiceStatus("https://booking.example/client", undefined),
-    /для клиентов подключено/,
+    getFitnessServiceStatus(undefined),
+    /Личный кабинет пока не подключён/,
   );
   assert.match(
-    getFitnessServiceStatus(undefined, "https://booking.example/trainer"),
-    /для тренеров подключён/,
-  );
-  assert.match(
-    getFitnessServiceStatus(
-      "https://booking.example/client",
-      "https://booking.example/trainer",
-    ),
-    /Оба входа подключены/,
+    getFitnessServiceStatus("https://booking.example/client"),
+    /Личный кабинет подключён/,
   );
 });
 

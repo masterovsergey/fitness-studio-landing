@@ -11,15 +11,8 @@ const Arrow = () => <span aria-hidden="true">↗</span>;
 const clientPortalUrl = getFitnessServiceUrl(
   process.env.NEXT_PUBLIC_CLIENT_PORTAL_URL,
 );
-const trainerPortalUrl = getFitnessServiceUrl(
-  process.env.NEXT_PUBLIC_TRAINER_PORTAL_URL,
-);
 const clientPortalDestination = clientPortalUrl ?? "#service";
-const trainerPortalDestination = trainerPortalUrl ?? "#service";
-const fitnessServiceStatus = getFitnessServiceStatus(
-  clientPortalUrl,
-  trainerPortalUrl,
-);
+const fitnessServiceStatus = getFitnessServiceStatus(clientPortalUrl);
 
 export const dynamic = "force-static";
 
@@ -272,34 +265,21 @@ export default function Home() {
 
               <div className="service-access" id="service" aria-labelledby="service-title">
                 <div className="service-access-heading">
-                  <p>Цифровой сервис</p>
-                  <h3 id="service-title">Два понятных входа.<br />Одна система студии.</h3>
+                  <p>Будущий личный кабинет</p>
+                  <h3 id="service-title">Запись и оплата.<br />В одном месте.</h3>
                 </div>
 
                 <div className="service-portals">
                   <article className="service-portal">
-                    <span className="service-portal-role">Для клиентов</span>
-                    <h4>Приложение для клиентов</h4>
-                    <p>Расписание, покупка и оплата занятий, переносы и остаток посещений.</p>
+                    <span className="service-portal-role">Для посетителей</span>
+                    <h4>Личный кабинет</h4>
+                    <p>Расписание, запись, покупка и оплата занятий, переносы и остаток посещений.</p>
                     {clientPortalUrl ? (
                       <a className="service-portal-link" href={clientPortalUrl}>
-                        Открыть приложение <Arrow />
+                        Открыть личный кабинет <Arrow />
                       </a>
                     ) : (
-                      <span className="service-portal-status">Подключим после выбора сервиса</span>
-                    )}
-                  </article>
-
-                  <article className="service-portal">
-                    <span className="service-portal-role">Для команды</span>
-                    <h4>Приложение для тренеров</h4>
-                    <p>Расписание, клиенты и посещения; администратору — услуги, цены и команда до 10 специалистов.</p>
-                    {trainerPortalUrl ? (
-                      <a className="service-portal-link" href={trainerPortalUrl}>
-                        Вход для тренеров <Arrow />
-                      </a>
-                    ) : (
-                      <span className="service-portal-status">Подключим после выбора сервиса</span>
+                      <span className="service-portal-status">Появится после подключения сервиса</span>
                     )}
                   </article>
                 </div>
@@ -368,7 +348,7 @@ export default function Home() {
           <nav aria-label="Навигация в подвале">
             <a href="#about">О студии</a><a href="#directions">Направления</a><a href="#space">Пространство</a>
             <a href="#booking">Запись</a><a href="#team">Тренеры</a><a href="#faq">FAQ</a>
-            <a href={trainerPortalDestination}>Сервис для тренеров</a>
+            <a href={clientPortalDestination}>Личный кабинет</a>
           </nav>
           <div className="footer-status"><span aria-hidden="true" /><p>Рабочая версия · название и данные студии будут добавлены после утверждения</p></div>
         </div>

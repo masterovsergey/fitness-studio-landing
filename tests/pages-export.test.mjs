@@ -33,16 +33,43 @@ test("creates a complete GitHub Pages artifact", async () => {
     /\/fitness-studio-landing\/fonts\/Manrope-Regular\.ttf/i,
   );
   assert.match(html, /id="service"/i);
-  assert.match(html, /Приложение для клиентов/i);
-  assert.match(html, /Приложение для тренеров/i);
-  const expectedServiceStatus = getFitnessServiceStatus(
-    getFitnessServiceUrl(process.env.NEXT_PUBLIC_CLIENT_PORTAL_URL),
-    getFitnessServiceUrl(process.env.NEXT_PUBLIC_TRAINER_PORTAL_URL),
+  assert.match(html, /Запись и оплата/i);
+  assert.match(html, /Личный кабинет/i);
+  assert.doesNotMatch(
+    html,
+    /Приложение для тренеров|Для команды|Вход для тренеров|Сервис для тренеров/i,
   );
+  const clientPortalUrl = getFitnessServiceUrl(
+    process.env.NEXT_PUBLIC_CLIENT_PORTAL_URL,
+  );
+  const expectedServiceStatus = getFitnessServiceStatus(clientPortalUrl);
   assert.ok(
     html.includes(expectedServiceStatus),
     `missing service status: ${expectedServiceStatus}`,
   );
+  if (clientPortalUrl) {
+    const escapedPortalUrl = clientPortalUrl
+      .replaceAll("&", "&amp;")
+      .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.match(
+      html,
+      new RegExp(
+        `class="service-portal-link" href="${escapedPortalUrl}"`,
+        "i",
+      ),
+    );
+    assert.ok(
+      (html.match(new RegExp(`href="${escapedPortalUrl}"`, "gi")) ?? [])
+        .length >= 4,
+      "connected client portal URL is missing from the main entry points",
+    );
+    assert.match(html, /Открыть личный кабинет/i);
+    assert.doesNotMatch(html, /Появится после подключения сервиса/i);
+  } else {
+    assert.match(html, /Появится после подключения сервиса/i);
+    assert.doesNotMatch(html, /Открыть личный кабинет/i);
+    assert.doesNotMatch(html, /class="service-portal-link"/i);
+  }
 
   const [robots, sitemap] = await Promise.all([
     readFile(new URL("robots.txt", outputRoot), "utf8"),

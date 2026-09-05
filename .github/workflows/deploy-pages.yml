@@ -52,7 +52,6 @@ jobs:
           NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}/
           NEXT_PUBLIC_SITE_INDEXABLE: "false"
           NEXT_PUBLIC_CLIENT_PORTAL_URL: ${{ vars.CLIENT_PORTAL_URL }}
-          NEXT_PUBLIC_TRAINER_PORTAL_URL: ${{ vars.TRAINER_PORTAL_URL }}
         run: pnpm run test:pages
 
       - name: Upload Pages artifact
