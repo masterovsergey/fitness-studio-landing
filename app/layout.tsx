@@ -13,6 +13,19 @@ const socialImage = publicSiteUrl
   : undefined;
 
 const fontRoot = withSiteBasePath("/fonts");
+const staticPageNavigation = `
+(() => {
+  const documentPath = window.location.pathname;
+  window.addEventListener("popstate", (event) => {
+    // This static document has no RSC endpoint. Keep fragment/history navigation native.
+    if (window.location.pathname === documentPath) {
+      window.history.scrollRestoration = "auto";
+      event.stopImmediatePropagation();
+    }
+  }, { capture: true });
+})();
+`;
+
 const localFontStyles = `
   @font-face {
     font-family: "Manrope";
@@ -98,6 +111,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="ru">
       <head>
+        {process.env.FITNESS_PAGES_BUILD === "true" && (
+          <script
+            id="static-page-navigation"
+            dangerouslySetInnerHTML={{ __html: staticPageNavigation }}
+          />
+        )}
         <style>{localFontStyles}</style>
       </head>
       <body>{children}</body>

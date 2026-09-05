@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { access, readdir, readFile } from "node:fs/promises";
 import test from "node:test";
+import { runInNewContext } from "node:vm";
 import {
   getFitnessServiceStatus,
   getFitnessServiceUrl,
@@ -8,6 +9,44 @@ import {
 
 const outputRoot = new URL("../dist/client/", import.meta.url);
 const basePath = "/fitness-studio-landing";
+
+test("keeps static-page history navigation out of the server router", async () => {
+  const html = await readFile(new URL("index.html", outputRoot), "utf8");
+  const script = html.match(/<script id="static-page-navigation">([\s\S]*?)<\/script>/)?.[1];
+  assert.ok(script, "static navigation guard is missing from the Pages HTML");
+
+  const location = { pathname: `${basePath}/`, search: "", hash: "" };
+  const history = { scrollRestoration: "manual" };
+  let listener;
+  runInNewContext(script, {
+    window: {
+      location,
+      history,
+      addEventListener(type, callback, options) {
+        assert.equal(type, "popstate");
+        assert.equal(options.capture, true);
+        listener = callback;
+      },
+    },
+  });
+  assert.equal(typeof listener, "function");
+
+  function navigate(url) {
+    Object.assign(location, url);
+    let serverNavigationBlocked = false;
+    listener({
+      stopImmediatePropagation() { serverNavigationBlocked = true; },
+      preventDefault() { assert.fail("native history navigation must not be cancelled"); },
+    });
+    return serverNavigationBlocked;
+  }
+
+  assert.equal(navigate({ hash: "#service" }), true);
+  assert.equal(history.scrollRestoration, "auto");
+  assert.equal(navigate({ hash: "#top" }), true);
+  assert.equal(navigate({ search: "?utm_source=demo", hash: "" }), true);
+  assert.equal(navigate({ pathname: "/another-page/" }), false);
+});
 
 test("creates a complete GitHub Pages artifact", async () => {
   await Promise.all([

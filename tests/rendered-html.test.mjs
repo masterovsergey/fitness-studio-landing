@@ -84,6 +84,7 @@ test("server-renders the loft fitness landing structure", async () => {
   assert.match(html, /name="robots" content="noindex, nofollow"/i);
   assert.doesNotMatch(html, /127\.0\.0\.1|localhost/i);
   assert.doesNotMatch(html, /<form\b/i);
+  assert.doesNotMatch(html, /id="static-page-navigation"/i);
   assert.doesNotMatch(html, /<button[^>]*\bdisabled\b/i);
   const ids = new Set([...html.matchAll(/\sid="([^"]+)"/g)].map((match) => match[1]));
   for (const match of html.matchAll(/href="#([^"]+)"/g)) {
@@ -187,7 +188,6 @@ test("keeps placeholders honest and uses only the new image direction", async ()
   assert.match(css, /max-height:\s*calc\(100svh - var\(--header-height\)\)/);
   assert.match(css, /overflow-y:\s*auto/);
   assert.match(css, /@media \(hover: hover\) and \(pointer: fine\)/);
-  assert.match(css, /\.direction-card:hover[\s\S]*background:\s*var\(--copper-deep\)/);
   assert.match(css, /\.trainer-card figure\s*\{[\s\S]*?aspect-ratio:\s*3 \/ 4/);
   assert.doesNotMatch(css, /saturate\(0\.72\)/);
   assert.doesNotMatch(css, /url\(["']?\/fonts\//);

@@ -141,7 +141,6 @@ export default function Home() {
             </picture>
           </figure>
           <div className="hero-overlay" aria-hidden="true" />
-          <div className="hero-grid" aria-hidden="true" />
 
           <div className="hero-content shell">
             <div className="hero-topline">
@@ -326,7 +325,6 @@ export default function Home() {
         </section>
 
         <section className="final-section" id="contacts" aria-labelledby="final-title">
-          <div className="final-outline" aria-hidden="true">MOVE</div>
           <div className="shell final-content">
             <p className="eyebrow eyebrow-on-accent"><span>08</span> Первый шаг</p>
             <div className="final-grid">

@@ -116,6 +116,8 @@ const exitCode = await new Promise((resolve, reject) => {
 if (exitCode !== 0) {
   process.exitCode = exitCode;
 } else {
+  // Prerendering runs in this process, separately from the build child above.
+  process.env.FITNESS_PAGES_BUILD = "true";
   const serverEntry = new URL(
     `../dist/server/index.js?pages-build=${Date.now()}`,
     import.meta.url,
