@@ -132,6 +132,7 @@ test("creates a complete GitHub Pages artifact", async () => {
     ".nojekyll",
     "404.html",
     "assets",
+    "club",
     "favicon.svg",
     "fonts",
     "images",

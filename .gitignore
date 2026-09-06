@@ -32,6 +32,17 @@
 !/public/og-loft-v2-1200.png
 !/public/fonts/
 !/public/images/
+!/public/club/
+/public/club/*
+!/public/club/index.html
+!/public/club/app.css
+!/public/club/app.js
+!/public/club/data.js
+!/public/club/manifest.webmanifest
+!/public/club/sw.js
+!/public/club/icon.svg
+!/public/club/icon-192.png
+!/public/club/icon-512.png
 /public/fonts/*
 !/public/fonts/Manrope-Regular.ttf
 !/public/fonts/Manrope-SemiBold.ttf

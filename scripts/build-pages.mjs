@@ -41,11 +41,16 @@ async function prunePublicArtifact() {
     outputPath,
     new Set([
       "assets",
+      "club",
       "favicon.svg",
       "fonts",
       "images",
       "og-loft-v2-1200.png",
     ]),
+  );
+  await keepOnly(
+    join(outputPath, "club"),
+    new Set(["index.html", "app.css", "app.js", "data.js", "manifest.webmanifest", "sw.js", "icon.svg", "icon-192.png", "icon-512.png"]),
   );
   await keepOnly(
     fontsPath,

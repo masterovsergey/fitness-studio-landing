@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f5f1ea">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+  <meta name="description" content="Демонстрационный клиентский кабинет фитнес-студии. Без реальной записи и оплаты.">
+  <title>Кабинет студии · прототип</title>
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./app.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Перейти к содержанию</a>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#home" aria-label="Главная кабинета"><span class="brand-symbol" aria-hidden="true">f.</span><span>Фитнес-студия<small>Личный ритм</small></span></a>
+      <div id="desktop-nav"></div>
+      <div class="sidebar-foot"><span class="demo-dot"></span> Клиентский прототип<p>Без реальной записи<br>и денежных операций.</p><a href="../">Вернуться на сайт ↗</a></div>
+    </aside>
+    <div class="workspace">
+      <header class="app-header"><a class="mobile-brand" href="#home"><span class="brand-symbol" aria-hidden="true">f.</span><span>Фитнес-студия</span></a><span class="header-caption">ПРОСТРАНСТВО ДЛЯ ДВИЖЕНИЯ</span><div class="header-actions"><span class="demo-badge">Демо</span><button class="icon-button" data-action="install" aria-label="Добавить на главный экран" id="install-entry"></button><button class="profile-button" data-route="profile" aria-label="Открыть профиль">Г</button></div></header>
+      <div class="notice" id="connection-notice" role="status" hidden></div>
+      <main id="main" tabindex="-1"><p class="loading">Открываем пространство…</p></main>
+      <footer class="prototype-foot">Прототип · расписание, цены и персонажи вымышлены.<br>Записи и покупки сохраняются только в этом браузере.</footer>
+    </div>
+    <div id="mobile-nav"></div>
+  </div>
+  <dialog id="sheet" aria-labelledby="dialog-title"><div id="sheet-content"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <noscript><p class="noscript">Для работы прототипа нужен JavaScript. <a href="../">Вернуться на сайт студии</a></p></noscript>
+</body>
+</html>
