@@ -77,29 +77,45 @@ function sessionCard(session, showDay = false) {
   const booked = Boolean(activeBooking(state, session.id));
   const seats = session.seats - (booked ? 1 : 0);
   const trainer = trainerById(session.trainer);
-  return `<button class="session-card ${booked ? 'booked' : ''}" data-action="session" data-id="${session.id}" aria-label="${escapeHtml(session.title)}, ${session.time}, ${booked ? 'вы записаны' : `свободных мест: ${seats}`}">
-    ${showDay ? `<p class="session-day">${dateText(dateAt(session.date), { day: 'numeric', month: 'long', weekday: 'short' })}</p>` : ''}
-    <div class="session-top"><span class="session-time">${session.time}<small>${session.minutes} мин</small></span><span class="seat-pill ${booked ? 'booked' : seats === 0 ? 'full' : ''}">${booked ? 'Вы записаны' : seats === 0 ? 'Мест нет' : `${seats} ${seats === 1 ? 'место' : seats < 5 ? 'места' : 'мест'}`}</span></div>
-    <h3>${session.title}</h3><div class="session-bottom">${picture(trainer)}<span>${trainer.name} · ${session.category === 'personal' ? 'индивидуально' : 'малая группа'}</span>${icon('arrow')}</div>
+  return `<button class="session-row ${booked ? 'booked' : ''}" data-action="session" data-id="${session.id}" aria-label="${escapeHtml(session.title)}, ${showDay ? dateText(dateAt(session.date)) + ', ' : ''}${session.time}, ${booked ? 'вы записаны' : `свободных мест: ${seats}`}">
+    ${showDay ? `<span class="session-date">${dateText(dateAt(session.date), { day: 'numeric', month: 'long', weekday: 'short' })}</span>` : ''}
+    <span class="session-row-content">
+      <span class="session-timing"><strong>${session.time}</strong><span>${session.minutes} мин</span></span>
+      <span class="session-info"><strong>${session.title}</strong><span class="session-coach">${picture(trainer)}<span>${trainer.name} · ${session.category === 'personal' ? 'индивидуально' : 'малая группа'}</span></span></span>
+      <span class="session-state ${booked ? 'booked' : seats === 0 ? 'full' : ''}">${booked ? 'Вы записаны' : seats === 0 ? 'Мест нет' : `${seats} ${seats === 1 ? 'место' : seats < 5 ? 'места' : 'мест'}`}</span>
+      ${icon('arrow', 'session-arrow')}
+    </span>
   </button>`;
 }
 function home() {
   const next = sessions.filter((s) => activeBooking(state, s.id)).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))[0];
   const count = state.bookings.filter((b) => b.status === 'active').length;
-  return `${heading('Движение в <em>твоём ритме.</em>', '', 'Хороший день, чтобы начать')}
-    <div class="hero-grid"><section class="hero-card"><img src="../images/loft-hero-v2-mobile.webp" alt="Визуальная концепция тренировки в лофтовой студии" width="780" height="1000"><div class="hero-copy"><p class="eyebrow">Сила · баланс · восстановление</p><h2>Время для себя.<br><em>Место для силы.</em></h2><p>Найди тренировку под своё настроение.</p><a class="primary light" href="#schedule">Выбрать занятие ${icon('arrow')}</a></div></section>
-    <section class="next-card"><div><div class="next-icon">${icon(next ? 'check' : 'calendar')}</div><p class="eyebrow">${next ? 'Твоя демо-запись' : 'Следующий шаг'}</p><h3>${next ? next.title : 'Начни с одной<br>тренировки'}</h3><p>${next ? `${dateText(dateAt(next.date))} · ${next.time}<br>${trainerById(next.trainer).name} · ${next.minutes} минут` : 'Выбери удобный день.<br>Остальное — по ощущениям.'}</p></div><button class="text-button" data-route="${next ? 'profile/visits' : 'schedule'}">${next ? 'Мои записи' : 'Посмотреть расписание'} ${icon('arrow')}</button></section></div>
-    <div class="quick-links"><button class="quick-link" data-route="profile/visits">${icon('calendar')}<span>Мои записи${count ? ` · ${count}` : ''}</span>${icon('chevron', 'chevron')}</button><button class="quick-link" data-route="profile/passes">${icon('bag')}<span>Мои абонементы</span>${icon('chevron', 'chevron')}</button><button class="quick-link" data-action="about">${icon('leaf')}<span>О пространстве</span>${icon('chevron', 'chevron')}</button></div>
-    <div class="section-head"><h2>Найди своё занятие</h2><a class="text-button" href="#schedule">Всё расписание ${icon('arrow')}</a></div><div class="session-grid">${sessions.slice(0, 2).map((s) => sessionCard(s, true)).join('')}</div>
-    <div class="editorial-card"><div><p class="eyebrow">Без спешки. Без соревнования.</p><h3>Сначала — познакомиться.</h3><p>Посмотри, как устроены пакеты тренировок.</p><a class="text-button" href="#shop">Выбрать свой формат ${icon('arrow')}</a></div>${icon('leaf')}</div>`;
+  return `${heading('Твой ритм.', '', 'Личный кабинет')}
+    <div class="home-overview">
+      <section class="next-visit" aria-labelledby="next-visit-title">
+        <div class="next-visit-top"><p class="eyebrow">${next ? 'Твоя демо-запись' : 'Начать с движения'}</p>${icon(next ? 'check' : 'calendar')}</div>
+        <h2 id="next-visit-title">${next ? next.title : 'Когда тебе удобно?'}</h2>
+        ${next ? `<div class="visit-slot"><strong>${next.time}</strong><p>${dateText(dateAt(next.date))}<br>${trainerById(next.trainer).name} · ${next.minutes} мин</p></div>` : '<p class="next-visit-copy">Выбери день и занятие.<br>Всё остальное — в твоём темпе.</p>'}
+        <a class="primary visit-cta" href="#${next ? 'profile/visits' : 'schedule'}">${next ? 'Посмотреть запись' : 'Выбрать занятие'} ${icon('arrow')}</a>
+        <p class="visit-demo">Демо · без реальной записи и оплаты</p>
+      </section>
+      <nav class="home-tools" aria-label="Твой кабинет">
+        <a href="#profile/visits">${icon('calendar')}<span>Мои записи<small>${count ? `Активных демо-записей: ${count}` : 'Пока нет записей'}</small></span>${icon('chevron')}</a>
+        <a href="#profile/passes">${icon('bag')}<span>Мои абонементы<small>${state.passes.length ? 'Баланс демо-посещений' : 'Пока нет абонементов'}</small></span>${icon('chevron')}</a>
+        <a href="#shop">${icon('arrow')}<span>Выбрать пакет<small>Форматы и демо-цены</small></span>${icon('chevron')}</a>
+      </nav>
+    </div>
+    <div class="section-head"><h2>Из расписания</h2><a class="text-button" href="#schedule">Все занятия ${icon('arrow')}</a></div>
+    <div class="session-list">${sessions.slice(0, 2).map((s) => sessionCard(s, true)).join('')}</div>
+    <section class="studio-glimpse"><img src="../images/loft-space-v2-mobile.webp" alt="Визуальная концепция пространства студии" width="780" height="1000" loading="lazy"><div><p class="eyebrow">Студия</p><h2>Место для движения.</h2><button class="text-button" data-action="about">О пространстве ${icon('arrow')}</button></div></section>`;
 }
 function schedule() {
   const visible = sessions.filter((s) => s.day === day && (category === 'all' || s.category === category)).sort((a, b) => a.time.localeCompare(b.time));
-  return `${heading('Расписание', 'Демонстрационная неделя. Выбери день и свой формат.', 'Твоё время для движения')}
+  return `${heading('Расписание', 'Выбери день и свой формат. Расписание демонстрационное.', 'Время для себя')}
   <section class="calendar" aria-label="Выбор дня"><div class="calendar-top"><h2>${dateText(dateAt(state.anchor), { month: 'long', year: 'numeric' })}</h2><span>Демо · 7 дней</span></div><div class="week">${Array.from({ length: 7 }, (_, index) => { const date = dateAt(state.anchor, index); return `<button class="day-button" data-action="day" data-day="${index}" aria-pressed="${day === index}" aria-label="${dateText(date, { weekday: 'long', day: 'numeric', month: 'long' })}"><span>${dateText(date, { weekday: 'short' })}</span>${date.getDate()}</button>`; }).join('')}</div></section>
   <div class="chips" aria-label="Фильтр направлений">${categories.map(([value, label]) => `<button class="chip" data-action="category" data-id="${value}" aria-pressed="${category === value}">${label}</button>`).join('')}</div>
   <p class="schedule-day-heading">${dateText(dateAt(state.anchor, day), { weekday: 'long', day: 'numeric', month: 'long' })} · Занятий: ${visible.length}</p>
-  <div class="session-grid">${visible.length ? visible.map((s) => sessionCard(s)).join('') : `<div class="empty">${icon('leaf')}<h3>Здесь пока свободный день</h3><p>В этом демо нет занятий по выбранным условиям. Попробуй другой день или направление.</p><button class="secondary" data-action="reset-filters">Показать все занятия первого дня</button></div>`}</div>`;
+  <div class="session-list">${visible.length ? visible.map((s) => sessionCard(s)).join('') : `<div class="empty">${icon('leaf')}<h3>Здесь пока свободный день</h3><p>В этом демо нет занятий по выбранным условиям. Попробуй другой день или направление.</p><button class="secondary" data-action="reset-filters">Показать все занятия первого дня</button></div>`}</div>`;
 }
 function shop() {
   const visible = products.filter((p) => shopCategory === 'all' || p.category === shopCategory);
@@ -152,6 +168,7 @@ function help() {
 }
 function render(moveFocus = false) {
   const views = { home, schedule, shop, trainers: team, profile, 'profile/visits': visits, 'profile/passes': passes, 'profile/reminders': reminders, 'profile/help': help };
+  main.classList.toggle('rhythm-view', route() === 'home' || route() === 'schedule');
   main.innerHTML = views[route()]();
   navigation();
   document.title = `${navItems.find(([key]) => key === route().split('/')[0])?.[1] || 'Кабинет'} · прототип студии`;
