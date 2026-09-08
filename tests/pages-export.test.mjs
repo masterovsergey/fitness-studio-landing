@@ -72,7 +72,7 @@ test("creates a complete GitHub Pages artifact", async () => {
     /\/fitness-studio-landing\/fonts\/Manrope-Regular\.ttf/i,
   );
   assert.match(html, /id="service"/i);
-  assert.match(html, /Запись и оплата/i);
+  assert.match(html, /Твоё расписание/i);
   assert.match(html, /Личный кабинет/i);
   assert.doesNotMatch(
     html,
@@ -99,15 +99,22 @@ test("creates a complete GitHub Pages artifact", async () => {
     );
     assert.ok(
       (html.match(new RegExp(`href="${escapedPortalUrl}"`, "gi")) ?? [])
-        .length >= 4,
+        .length >= 9,
       "connected client portal URL is missing from the main entry points",
     );
     assert.match(html, /Открыть личный кабинет/i);
     assert.doesNotMatch(html, /Появится после подключения сервиса/i);
+    assert.doesNotMatch(html, /href="[^\"]*\/club\/#(?:profile|schedule)"/i);
   } else {
-    assert.match(html, /Появится после подключения сервиса/i);
-    assert.doesNotMatch(html, /Открыть личный кабинет/i);
-    assert.doesNotMatch(html, /class="service-portal-link"/i);
+    assert.match(html, /Открыть демо-профиль/i);
+    assert.match(html, /Настоящие бронирования и оплата пока не подключены/i);
+    assert.match(html, /class="service-portal-link" href="\/fitness-studio-landing\/club\/#profile"/i);
+    assert.match(html, /class="cabinet-link" href="\/fitness-studio-landing\/club\/#profile"/i);
+    assert.match(html, /class="header-cta" href="\/fitness-studio-landing\/club\/#schedule"/i);
+    assert.match(html, /class="mobile-booking" href="\/fitness-studio-landing\/club\/#schedule"/i);
+    assert.equal((html.match(/href="\/fitness-studio-landing\/club\/#profile"/g) ?? []).length, 4);
+    assert.equal((html.match(/href="\/fitness-studio-landing\/club\/#schedule"/g) ?? []).length, 5);
+    assert.doesNotMatch(html, /Будущий личный кабинет|Появится после подключения сервиса|Личный кабинет подключён/i);
   }
 
   const [robots, sitemap] = await Promise.all([

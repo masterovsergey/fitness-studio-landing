@@ -11,7 +11,8 @@ const Arrow = () => <span aria-hidden="true">↗</span>;
 const clientPortalUrl = getFitnessServiceUrl(
   process.env.NEXT_PUBLIC_CLIENT_PORTAL_URL,
 );
-const clientPortalDestination = clientPortalUrl ?? "#service";
+const clientPortalDestination = clientPortalUrl ?? withSiteBasePath("/club/#profile");
+const scheduleDestination = clientPortalUrl ?? withSiteBasePath("/club/#schedule");
 const fitnessServiceStatus = getFitnessServiceStatus(clientPortalUrl);
 
 export const dynamic = "force-static";
@@ -66,8 +67,8 @@ const trainers = [
 
 const bookingSteps = [
   { number: "01", title: "Выбрать формат", text: "Групповое или персональное занятие под вашу задачу." },
-  { number: "02", title: "Найти время", text: "Актуальное расписание и свободные места в одном окне." },
-  { number: "03", title: "Записаться", text: "Оплата и управление посещениями через личный кабинет." },
+  { number: "02", title: "Найти время", text: clientPortalUrl ? "Расписание и свободные места в сервисе студии." : "Выберите день и время в демонстрационном расписании." },
+  { number: "03", title: "Записаться", text: clientPortalUrl ? "Запись и управление посещениями через личный кабинет." : "Попробуйте демо-запись без оплаты и регистрации." },
 ];
 
 const faqs = [
@@ -81,7 +82,9 @@ const faqs = [
   },
   {
     question: "Как записываться и оплачивать занятия?",
-    answer: "Через личный кабинет: в нём будут запись, перенос, отмена, оплата и остаток посещений.",
+    answer: clientPortalUrl
+      ? "Откройте личный кабинет по кнопке на сайте. Условия записи, оплаты и отмены указаны в сервисе студии."
+      : "Откройте расписание в приложении и попробуйте демо-запись. Настоящая запись и оплата пока не подключены; тестовые действия сохраняются только в вашем браузере.",
   },
   {
     question: "Что взять с собой?",
@@ -118,9 +121,9 @@ export default function Home() {
           </nav>
 
           <div className="header-actions">
-            <MobileNavigation clientPortalUrl={clientPortalUrl} />
+            <MobileNavigation clientPortalDestination={clientPortalDestination} scheduleDestination={scheduleDestination} />
             <a className="cabinet-link" href={clientPortalDestination}>Личный кабинет</a>
-            <a className="header-cta" href="#directions">Выбрать занятие <Arrow /></a>
+            <a className="header-cta" href={scheduleDestination}>Выбрать занятие <Arrow /></a>
           </div>
         </div>
       </header>
@@ -245,11 +248,11 @@ export default function Home() {
             <div className="booking-copy">
               <p className="eyebrow eyebrow-dark"><span>05</span> Запись</p>
               <h2 id="booking-title">Один маршрут.<br /><em>Без лишних действий.</em></h2>
-              <p className="booking-lead">Выбор занятия, расписание, оплата и управление посещениями будут собраны в одном личном кабинете.</p>
-              <a className="button button-light" href="#service">Перейти к сервису <Arrow /></a>
+              <p className="booking-lead">{clientPortalUrl ? "Выберите занятие в расписании и перейдите к записи в личном кабинете." : "Посмотрите расписание и попробуйте запись в демо-приложении. Настоящие бронирования и оплата пока не подключены."}</p>
+              <a className="button button-light" href={scheduleDestination}>Открыть расписание <Arrow /></a>
             </div>
 
-            <div className="booking-flow" aria-label="Как будет устроена запись">
+            <div className="booking-flow" aria-label={clientPortalUrl ? "Как записаться" : "Как попробовать демо-запись"}>
               {bookingSteps.map((step) => (
                 <article key={step.number}>
                   <span>{step.number}</span>
@@ -264,22 +267,18 @@ export default function Home() {
 
               <div className="service-access" id="service" aria-labelledby="service-title">
                 <div className="service-access-heading">
-                  <p>Будущий личный кабинет</p>
-                  <h3 id="service-title">Запись и оплата.<br />В одном месте.</h3>
+                  <p>{clientPortalUrl ? "Личный кабинет" : "Демо-приложение студии"}</p>
+                  <h3 id="service-title">Твоё расписание.<br />Твой ритм.</h3>
                 </div>
 
                 <div className="service-portals">
                   <article className="service-portal">
                     <span className="service-portal-role">Для посетителей</span>
                     <h4>Личный кабинет</h4>
-                    <p>Расписание, запись, покупка и оплата занятий, переносы и остаток посещений.</p>
-                    {clientPortalUrl ? (
-                      <a className="service-portal-link" href={clientPortalUrl}>
-                        Открыть личный кабинет <Arrow />
-                      </a>
-                    ) : (
-                      <span className="service-portal-status">Появится после подключения сервиса</span>
-                    )}
+                    <p>{clientPortalUrl ? "Расписание, запись и управление посещениями в сервисе студии." : "Ваши демо-записи, примеры абонементов и остаток тестовых посещений — в одном профиле."}</p>
+                    <a className="service-portal-link" href={clientPortalDestination}>
+                      {clientPortalUrl ? "Открыть личный кабинет" : "Открыть демо-профиль"} <Arrow />
+                    </a>
                   </article>
                 </div>
 
@@ -345,7 +344,7 @@ export default function Home() {
           </a>
           <nav aria-label="Навигация в подвале">
             <a href="#about">О студии</a><a href="#directions">Направления</a><a href="#space">Пространство</a>
-            <a href="#booking">Запись</a><a href="#team">Тренеры</a><a href="#faq">FAQ</a>
+            <a href={scheduleDestination}>Запись</a><a href="#team">Тренеры</a><a href="#faq">FAQ</a>
             <a href={clientPortalDestination}>Личный кабинет</a>
           </nav>
           <div className="footer-status"><span aria-hidden="true" /><p>Рабочая версия · название и данные студии будут добавлены после утверждения</p></div>
@@ -357,7 +356,7 @@ export default function Home() {
         </div>
       </footer>
 
-      <a className="mobile-booking" href={clientPortalDestination}>Личный кабинет <Arrow /></a>
+      <a className="mobile-booking" href={scheduleDestination}>Записаться <Arrow /></a>
     </>
   );
 }

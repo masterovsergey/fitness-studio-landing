@@ -3,18 +3,19 @@
 import { useRef, useState } from "react";
 
 interface MobileNavigationProps {
-  clientPortalUrl?: string;
+  clientPortalDestination: string;
+  scheduleDestination: string;
 }
 
-export function MobileNavigation({ clientPortalUrl }: MobileNavigationProps) {
+export function MobileNavigation({ clientPortalDestination, scheduleDestination }: MobileNavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const links = [
     { href: "#about", label: "О студии" },
     { href: "#directions", label: "Направления" },
     { href: "#space", label: "Пространство" },
-    { href: "#booking", label: "Как записаться" },
-    { href: clientPortalUrl ?? "#service", label: "Личный кабинет" },
+    { href: scheduleDestination, label: "Расписание" },
+    { href: clientPortalDestination, label: "Личный кабинет" },
     { href: "#team", label: "Тренеры" },
     { href: "#faq", label: "FAQ" },
   ];
@@ -46,7 +47,7 @@ export function MobileNavigation({ clientPortalUrl }: MobileNavigationProps) {
       </button>
       <nav id="mobile-navigation-panel" aria-label="Мобильная навигация" hidden={!isOpen}>
         {links.map((link) => (
-          <a href={link.href} key={link.href} onClick={closeMenu}>
+          <a href={link.href} key={link.label} onClick={closeMenu}>
             {link.label}
           </a>
         ))}

@@ -127,6 +127,7 @@ function profile() {
     ${menuButton('Уведомления', 'bell', 'profile/reminders')}
     <button class="menu-button" data-action="rules">${icon('document')}<span>Правила и документы</span>${icon('chevron')}</button>
     ${menuButton('Как это работает', 'info', 'profile/help')}
+    <a class="menu-button" href="../">${icon('home')}<span>На сайт студии</span>${icon('arrow')}</a>
     <button class="menu-button danger" data-action="reset">${icon('reset')}<span>Начать демо заново</span></button></div></div>`;
 }
 const profileBack = () => `<a class="back-link" href="#profile">${icon('back')} Назад в профиль</a>`;

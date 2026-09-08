@@ -60,9 +60,11 @@ test("server-renders the loft fitness landing structure", async () => {
   assert.match(html, /Разные задачи/i);
   assert.match(html, /Личный кабинет/i);
   assert.match(html, /Один маршрут/i);
-  assert.match(html, /Запись и оплата/i);
+  assert.match(html, /Твоё расписание/i);
   assert.match(html, /Для посетителей/i);
-  assert.match(html, /Личный кабинет пока не подключён/i);
+  assert.match(html, /Демо-приложение: без регистрации, настоящей записи и оплаты/i);
+  assert.match(html, /class="cabinet-link" href="\/club\/#profile"/i);
+  assert.match(html, /class="mobile-booking" href="\/club\/#schedule"/i);
   assert.doesNotMatch(
     html,
     /Приложение для тренеров|Для команды|Вход для тренеров|Сервис для тренеров/i,
@@ -125,7 +127,7 @@ test("keeps placeholders honest and uses only the new image direction", async ()
   assert.match(page, /Точный список вещей и требования к экипировке/);
   assert.doesNotMatch(page, /Удобную спортивную форму|чистую сменную обувь/);
   assert.doesNotMatch(page, /Название появится позже|Состав программы уточняется|Цена после утверждения/);
-  assert.match(page, /<MobileNavigation clientPortalUrl=\{clientPortalUrl\} \/>/);
+  assert.match(page, /<MobileNavigation clientPortalDestination=\{clientPortalDestination\} scheduleDestination=\{scheduleDestination\} \/>/);
   assert.equal((page.match(/className="direction-card"/g) ?? []).length, 1);
   assert.match(page, /className="direction-card"[\s\S]*href="#booking"/);
   assert.doesNotMatch(page, /className="schedule-link"|className="price-grid"|className="reviews-section"/);
@@ -139,8 +141,9 @@ test("keeps placeholders honest and uses only the new image direction", async ()
   assert.doesNotMatch(page, /hero-studio|restore-\d|reception-\d|community-\d/i);
   assert.doesNotMatch(page, /AURUM|MELUNIS|RED LOCKERS|Жуковск|бокс|boxing/i);
   assert.doesNotMatch(page, /₽|руб(?:\.|л|лей)|Скоро открытие/i);
-  assert.match(mobileNavigation, /#booking/);
-  assert.match(mobileNavigation, /#service/);
+  assert.match(mobileNavigation, /href: scheduleDestination, label: "Расписание"/);
+  assert.match(mobileNavigation, /href: clientPortalDestination, label: "Личный кабинет"/);
+  assert.doesNotMatch(mobileNavigation, /#service|clientPortalUrl\s*\?\?/);
   assert.match(mobileNavigation, /Личный кабинет/);
   assert.match(mobileNavigation, /#space/);
   assert.match(mobileNavigation, /#team/);
@@ -293,11 +296,11 @@ test("validates future fitness-service links without discarding their paths", ()
 test("describes all fitness-service connection states honestly", () => {
   assert.match(
     getFitnessServiceStatus(undefined),
-    /Личный кабинет пока не подключён/,
+    /Демо-приложение: без регистрации, настоящей записи и оплаты/,
   );
   assert.match(
     getFitnessServiceStatus("https://booking.example/client"),
-    /Личный кабинет подключён/,
+    /Открывается сервис студии/,
   );
 });
 
@@ -339,4 +342,11 @@ test("normalizes and applies a safe GitHub Pages base path", () => {
     "/fitness-studio-landing/images/hero.webp",
   );
   assert.throws(() => withSiteBasePath("images/hero.webp"));
+  for (const route of ["profile", "schedule"]) {
+    assert.equal(withSiteBasePath(`/club/#${route}`, ""), `/club/#${route}`);
+    assert.equal(
+      withSiteBasePath(`/club/#${route}`, "/fitness-studio-landing"),
+      `/fitness-studio-landing/club/#${route}`,
+    );
+  }
 });

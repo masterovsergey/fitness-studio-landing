@@ -10,3 +10,5 @@ dialog{border:0;border-radius:26px;padding:0;background:#fcfaf5;color:var(--ink)
 @media(max-width:350px){.workspace{padding:0 14px}h1{font-size:27px}.mobile-brand{font-size:11px;gap:8px}.hero-card{padding:21px}.hero-copy h2{font-size:28px}.session-time small{font-size:10px;margin-left:4px}.seat-pill{font-size:9px}.sheet-inner{padding-inline:18px}.sheet-head h2{font-size:21px}}
 .hero-card::after{background:linear-gradient(0deg,#171a16e6,#171a1699)}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+/* Route headings receive focus for reading order, not as interactive controls. */
+main h1[tabindex="-1"]:focus { outline: none; }

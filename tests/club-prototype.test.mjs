@@ -24,6 +24,11 @@ test('exports the isolated PWA with demo labelling and local assets', async () =
   const js = await readFile(new URL('app.js', club), 'utf8');
   assert.match(js, /register\('\.\/sw\.js', \{ scope: '\.\/' \}\)/);
   assert.doesNotMatch(js, /https?:\/\/|Notification\.requestPermission|fetch\(/);
+  assert.match(js, /<a class="menu-button" href="\.\.\/">[^\n]*На сайт студии/);
+  assert.match(html, /href="\.\.\/">Вернуться на сайт/);
+  assert.match(css, /main h1\[tabindex="-1"\]:focus\s*\{\s*outline:\s*none;/);
+  assert.match(css, /:focus-visible\s*\{outline:3px solid/);
+  assert.match(js, /querySelector\('h1'\)\?\.focus\(\{ preventScroll: true \}\)/);
 });
 test('service worker ignores the landing, outside origins, query URLs, and non-GET requests', async () => {
   const source = await readFile(new URL('sw.js', club), 'utf8');
